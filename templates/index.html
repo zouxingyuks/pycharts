@@ -1,86 +1,16 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
     <title>Job Search</title>
 </head>
 <body>
     <h1>Job Search</h1>
-    <form action="/" method="POST">
-        <label for="job">Job:</label>
-        <input type="text" id="job" name="job">
-        <button type="submit">Search</button>
+    <form action="/" method="post">
+        <label for="job">Enter a job:</label>
+        <input type="text" id="job" name="job" required>
+        <br>
+        <input type="submit" value="Generate Word Cloud" name="word_cloud">
+        <input type="submit" value="Generate Salary Pie Chart" name="salary_pie">
     </form>
-
-    {% if results %}
-        <h2>Results:</h2>
-        <ul>
-            {% for result in results %}
-                <li>{{ result }}</li>
-            {% endfor %}
-        </ul>
-
-        <button onclick="location.href='/update'">Update</button>
-        <button onclick="location.href='/wordcloud'">Generate Word Cloud</button>
-    {% endif %}
-</body>
-</html>
-
-<!-- job_tags_chart.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Job Tags Word Cloud</title>
-</head>
-<body>
-    <div id="job_tags_chart" style="width:100%; height:100vh;"></div>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.1.2/dist/echarts.min.js"></script>
-    <script type="text/javascript">
-        var chart = echarts.init(document.getElementById('job_tags_chart'));
-        // 使用 Ajax 或其他方式从后端获取词云数据
-        // ...
-
-        // 示例数据
-        var data = {
-            "tag1": 10,
-            "tag2": 20,
-            "tag3": 15,
-            // ...
-        };
-
-        var option = {
-            series: [{
-                type: 'wordCloud',
-                shape: 'circle',
-                sizeRange: [12, 60],
-                rotationRange: [-90, 90],
-                rotationStep: 45,
-                gridSize: 8,
-                textStyle: {
-                    normal: {
-                        fontFamily: 'sans-serif',
-                        fontWeight: 'bold',
-                        color: function () {
-                            return 'rgb(' +
-                                Math.round(Math.random() * 160) +
-                                ', ' + Math.round(Math.random() * 160) +
-                                ', ' + Math.round(Math.random() * 160) + ')';
-                        }
-                    }
-                },
-                emphasis: {
-                    textStyle: {
-                        shadowBlur: 10,
-                        shadowColor: '#333'
-                    }
-                },
-                data: Object.entries(data).map(([key, value]) => ({ name: key, value: value })),
-            }]
-        };
-
-        chart.setOption(option);
-    </script>
 </body>
 </html>
