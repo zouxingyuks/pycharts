@@ -1,0 +1,17 @@
+mysql:
+  host: bj-cynosdbmysql-grp-ol0z32uy.sql.tencentcdb.com
+  port: 21113
+  user: pc
+  password: "Zxc753951."
+  database: jobs_pc
+# 爬虫获取失败重试
+retry_timeout: 120000  # 超时重试时间，单位为毫秒
+max_retry_attempts: 3  # 最大重试次数
+# 调试模式
+Debug_mod: true
+
+# 代理
+proxy_server:
+  server: "http://127.0.0.1:12387"
+  username: ""
+  password: ""
