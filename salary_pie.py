@@ -8,7 +8,6 @@ from dao.init import get_mysql_config
 from pyecharts import options as opts
 from pyecharts.charts import Geo
 
-
 def classify_salary(salary):
     if '·' in salary:
         salary_parts = salary.split('·')
@@ -146,5 +145,6 @@ def generate_salary_pie(data):
             label_opts=opts.LabelOpts(formatter="{b}: {c}", font_size=12, font_weight="bold")
         )
     )
-
+    salary_pie.width = "100%vh"
+    salary_pie.height = "100vh"
     salary_pie.render('templates/salary_pie_chart.html')

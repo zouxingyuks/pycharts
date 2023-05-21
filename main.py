@@ -1,19 +1,18 @@
-import os
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
-from pyecharts.charts import WordCloud, Pie
-from pyecharts.globals import ChartType
-from snapshot_selenium import snapshot as driver
-from dao.init import get_mysql_config
 from pyecharts import options as opts
 from pyecharts.charts import Geo
-from salary_pie import *
-from word_cloud import *
+from pyecharts.globals import ChartType
 
+from dao.init import get_mysql_config
+from salary_pie import generate_salary_pie
+from word_cloud import generate_word_cloud
+from geo_chart import  generate_geo_chart
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 config = get_mysql_config()
-app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{config['user']}:{config['password']}@{config['host']}:{config['port']}/{config['database']}"
+app.config[
+    'SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{config['user']}:{config['password']}@{config['host']}:{config['port']}/{config['database']}"
 db = SQLAlchemy(app)
 
 
@@ -28,54 +27,7 @@ class Job(db.Model):
 
     def __repr__(self):
         return f"<Job id={self.id} job_name={self.job_name} location={self.location} salary={self.salary} job_tags={self.job_tags} company={self.company}>"
-def split_location(location):
-    parts = location.split('·')
-    return [part.strip() for part in parts]
 
-# 在 generate_geo_chart 函数中添加地域分布图的生成逻辑
-def generate_geo_chart(data):
-    # 统计各个地区的数量
-    location_counts = {}
-    for result in data:
-        location = result.location
-        split_parts = split_location(location)
-        for i, part in enumerate(split_parts):
-            # print(part)
-
-            if i < 2:  # 只处理前两个元素
-                if part in location_counts:
-                    location_counts[part] += 1
-                else:
-                    location_counts[part] = 1
-
-    # 创建 Geo 实例并设置地图类型
-    geo = Geo()
-    geo.add_schema(maptype="china")
-
-    # 添加数据到 Geo 实例
-    geo.add(
-        series_name="地域分布",
-        data_pair=list(location_counts.items()),
-        type_=ChartType.EFFECT_SCATTER,  # 散点图类型
-        symbol_size=10,  # 散点大小
-        label_opts=opts.LabelOpts(is_show=True),  # 显示标签
-    )
-
-    # 设置全局配置项
-    geo.set_global_opts(
-        visualmap_opts=opts.VisualMapOpts(
-            max_=max(location_counts.values()),  # 数据的最大值
-            is_piecewise=True,  # 是否分段显示
-        ),
-        title_opts=opts.TitleOpts(
-            title="地域分布图",
-            pos_left="center",
-            title_textstyle_opts=opts.TextStyleOpts(font_weight="bold"),
-        ),
-    )
-
-    # 渲染地域分布图并保存到文件
-    geo.render("templates/geo_chart.html")
 
 
 @app.route('/', methods=['GET', 'POST'])
